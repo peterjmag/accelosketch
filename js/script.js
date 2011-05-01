@@ -12,6 +12,11 @@ var canvasLeft;
 var delta = [ 0, 0 ];
 var orientation = { x: 0, y: 1 };
 
+var stage = [ window.screenX, window.screenY, window.innerWidth, window.innerHeight ];
+var walls = [];
+var wall_thickness = 200;
+var wallsSet = false;
+
 function drawWorld(world, context) {
   for (var j = world.m_jointList; j; j = j.m_next) {
     drawJoint(j, context);
@@ -124,6 +129,27 @@ function step(cnt) {
   setTimeout('step(' + (cnt || 0) + ')', 10);
 }
 
+function setWalls() {
+  if (wallsSet) {
+    world.DestroyBody(walls[0]);
+    world.DestroyBody(walls[1]);
+    world.DestroyBody(walls[2]);
+    world.DestroyBody(walls[3]);
+
+    walls[0] = null;
+    walls[1] = null;
+    walls[2] = null;
+    walls[3] = null;
+  }
+
+  walls[0] = createBox(world, stage[2] / 2, - wall_thickness, stage[2], wall_thickness);
+  walls[1] = createBox(world, stage[2] / 2, stage[3] + wall_thickness, stage[2], wall_thickness);
+  walls[2] = createBox(world, - wall_thickness, stage[3] / 2, wall_thickness, stage[3]);
+  walls[3] = createBox(world, stage[2] + wall_thickness, stage[3] / 2, wall_thickness, stage[3]);	
+
+  wallsSet = true;
+}
+
 function onWindowDeviceOrientation( event ) {
   if ( event.beta ) {
     orientation.x = Math.sin( event.gamma * Math.PI / 180 );
@@ -140,6 +166,8 @@ Event.observe(window, 'load', function() {
   canvasHeight = parseInt(canvasElm.height);
   canvasTop = parseInt(canvasElm.style.top);
   canvasLeft = parseInt(canvasElm.style.left);
+
+  setWalls();
 
   window.addEventListener('deviceorientation', onWindowDeviceOrientation, false);
 
