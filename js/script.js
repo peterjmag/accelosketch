@@ -17,50 +17,10 @@ function drawWorld(world, context) {
     for (var s = b.GetShapeList(); s != null; s = s.GetNext()) {
       drawShape(s, context);
     }
-  }    
-}
-
-function drawJoint(joint, context) {
-  var b1 = joint.m_body1;
-  var b2 = joint.m_body2;
-  var x1 = b1.m_position;
-  var x2 = b2.m_position;
-  var p1 = joint.GetAnchor1();
-  var p2 = joint.GetAnchor2();
-  context.strokeStyle = '#00eeee';
-  context.beginPath();
-  switch (joint.m_type) {
-  case b2Joint.e_distanceJoint:
-    context.moveTo(p1.x, p1.y);
-    context.lineTo(p2.x, p2.y);
-    break;
-
-  case b2Joint.e_pulleyJoint:
-    // TODO
-    break;
-
-  default:
-    if (b1 == world.m_groundBody) {
-      context.moveTo(p1.x, p1.y);
-      context.lineTo(x2.x, x2.y);
-    }
-    else if (b2 == world.m_groundBody) {
-      context.moveTo(p1.x, p1.y);
-      context.lineTo(x1.x, x1.y);
-    }
-    else {
-      context.moveTo(x1.x, x1.y);
-      context.lineTo(p1.x, p1.y);
-      context.lineTo(x2.x, x2.y);
-      context.lineTo(p2.x, p2.y);
-    }
-    break;
   }
-  context.stroke();
 }
 
 function drawShape(shape, context) {
-  context.strokeStyle = '#ffffff';
   if (shape.density == 1.0) {
     context.fillStyle = "red";
   } else {
@@ -108,7 +68,6 @@ function drawShape(shape, context) {
     break;
   }
   context.fill();
-  context.stroke();
 }
 
 function createWorld() {
@@ -118,18 +77,7 @@ function createWorld() {
   var gravity = new b2Vec2(0, 300);
   var doSleep = true;
   world = new b2World(worldAABB, gravity, doSleep);
-  createGround(world);
   return world;
-}    
-
-function createGround(world) {
-  var groundSd = new b2BoxDef();
-  groundSd.extents.Set(400, 30);
-  groundSd.restitution = 0.0;
-  var groundBd = new b2BodyDef();
-  groundBd.AddShape(groundSd);
-  groundBd.position.Set(400, 470);
-  return world.CreateBody(groundBd);
 }
 
 function createBall(world, x, y) {
@@ -142,69 +90,6 @@ function createBall(world, x, y) {
   ballBd.AddShape(ballSd);
   ballBd.position.Set(x,y);
   return world.CreateBody(ballBd);
-}
-
-function createHelloWorld() {
-  // H
-  createBox(world, 50, 420, 10, 20, false);
-  createBox(world, 90, 420, 10, 20, false);
-  createBox(world, 70, 395, 30, 5, false);
-  createBox(world, 50, 370, 10, 20, false);
-  createBox(world, 90, 370, 10, 20, false);
-  
-  // E
-  createBox(world, 140, 435, 30, 5, false);
-  createBox(world, 120, 420, 10, 10, false);
-  createBox(world, 130, 405, 20, 5, false);
-  createBox(world, 120, 390, 10, 10, false);
-  createBox(world, 140, 375, 30, 5, true);
-  
-  // L
-  createBox(world, 200, 435, 20, 5, false);
-  createBox(world, 185, 400, 5, 30, false);
-  
-  // L
-  createBox(world, 250, 435, 20, 5, false);
-  createBox(world, 235, 400, 5, 30, false);
-  
-  // O
-  createBox(world, 300, 435, 20, 5, false);
-  createBox(world, 285, 405, 5, 25, false);
-  createBox(world, 315, 405, 5, 25, false);
-  createBox(world, 300, 375, 20, 5, false);
-  
-  // W
-  createBox(world, 390, 435, 40, 5, false);
-  createBox(world, 360, 390, 10, 40, false);
-  createBox(world, 420, 390, 10, 40, false);
-  createBox(world, 390, 415, 5, 15, false);
-  
-  // O
-  createBox(world, 460, 435, 20, 5, false);
-  createBox(world, 445, 405, 5, 25, false);
-  createBox(world, 475, 405, 5, 25, false);
-  createBox(world, 460, 375, 20, 5, false);
-  
-  // R
-  createBox(world, 495, 410, 5, 30, false);
-  createBox(world, 518, 425, 5, 15, false);
-  createBox(world, 515, 405, 15, 5, false);
-  createBox(world, 525, 390, 5, 10, false);
-  createBox(world, 510, 375, 20, 5, false);
-  
-  // L
-  createBox(world, 560, 435, 20, 5, false);
-  createBox(world, 545, 400, 5, 30, false);
-  
-  // D
-  createBox(world, 610, 435, 20, 5, false);
-  createBox(world, 595, 405, 5, 25, false);
-  createBox(world, 625, 405, 5, 25, false);
-  createBox(world, 610, 375, 20, 5, false);
-  
-  // !
-  createBox(world, 650, 430, 10, 10, false);
-  createBox(world, 650, 380, 10, 40, false);
 }
 
 function createBox(world, x, y, width, height, fixed) {
@@ -233,16 +118,14 @@ function step(cnt) {
 // main entry point
 Event.observe(window, 'load', function() {
   world = createWorld();
-  ctx = $('canvas').getContext('2d');
-  var canvasElm = $('canvas');
+  ctx = $('sketch').getContext('2d');
+  var canvasElm = $('sketch');
   canvasWidth = parseInt(canvasElm.width);
   canvasHeight = parseInt(canvasElm.height);
   canvasTop = parseInt(canvasElm.style.top);
   canvasLeft = parseInt(canvasElm.style.left);
   
-  createHelloWorld();
-  
-  Event.observe('canvas', 'click', function(e) {
+  Event.observe('sketch', 'click', function(e) {
       if (Math.random() > 0.5) {
         //createBox(world, Event.pointerX(e), Event.pointerY(e), 10, 10, false);
         createBox(world, e.clientX, e.clientY, 10, 10, false);
