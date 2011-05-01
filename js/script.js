@@ -93,7 +93,7 @@ function createWorld() {
 function createBall(world, x, y) {
   var ballSd = new b2CircleDef();
   ballSd.density = 1.0;
-  ballSd.radius = 20;
+  ballSd.radius = 4;
   ballSd.restitution = 0.5;
   ballSd.friction = 0.5;
   var ballBd = new b2BodyDef();
@@ -197,12 +197,7 @@ Event.observe(window, 'load', function() {
   window.addEventListener('deviceorientation', onWindowDeviceOrientation, false);
 
   Event.observe('sketch', 'click', function(e) {
-    if (Math.random() > 0.5) {
-      //createBox(world, Event.pointerX(e), Event.pointerY(e), 10, 10, false);
-      createBox(world, e.clientX, e.clientY, 10, 10, false);
-    } else {
-      createBall(world, Event.pointerX(e), Event.pointerY(e));
-    }
+    createBall(world, Event.pointerX(e), Event.pointerY(e));
   });
   step();
 });
