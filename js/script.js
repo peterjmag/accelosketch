@@ -182,6 +182,7 @@ function step(cnt) {
   world.m_gravity.y = orientation.y * 350 + delta[1];
 
   world.Step(timeStep, iteration);
+  // ctx.clearRect(0, 0, canvasWidth, canvasHeight);
   drawWorld(world, ctx);
   setTimeout('step(' + (cnt || 0) + ')', 10);
 }
@@ -191,6 +192,10 @@ Event.observe(window, 'load', function() {
   world = createWorld();
   ctx = $('sketch').getContext('2d');
   var canvasElm = $('sketch');
+  canvasWidth = parseInt(canvasElm.width);
+  canvasHeight = parseInt(canvasElm.height);
+  canvasTop = parseInt(canvasElm.style.top);
+  canvasLeft = parseInt(canvasElm.style.left);
 
   setWalls();
 
