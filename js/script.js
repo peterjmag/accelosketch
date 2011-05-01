@@ -36,7 +36,7 @@ function drawShape(shape, context) {
       var segments = 16.0;
       var theta = 0.0;
       var dtheta = 2.0 * Math.PI / segments;
-      
+
       // draw circle
       context.moveTo(pos.x + r, pos.y);
       for (var i = 0; i < segments; i++) {
@@ -46,7 +46,7 @@ function drawShape(shape, context) {
         theta += dtheta;
       }
       context.lineTo(pos.x + r, pos.y);
-  
+
       // draw radius
       context.moveTo(pos.x, pos.y);
       var ax = circle.m_R.col1;
@@ -124,14 +124,14 @@ Event.observe(window, 'load', function() {
   canvasHeight = parseInt(canvasElm.height);
   canvasTop = parseInt(canvasElm.style.top);
   canvasLeft = parseInt(canvasElm.style.left);
-  
+
   Event.observe('sketch', 'click', function(e) {
-      if (Math.random() > 0.5) {
-        //createBox(world, Event.pointerX(e), Event.pointerY(e), 10, 10, false);
-        createBox(world, e.clientX, e.clientY, 10, 10, false);
-      } else {
-        createBall(world, Event.pointerX(e), Event.pointerY(e));
-      }
+    if (Math.random() > 0.5) {
+      //createBox(world, Event.pointerX(e), Event.pointerY(e), 10, 10, false);
+      createBox(world, e.clientX, e.clientY, 10, 10, false);
+    } else {
+      createBall(world, Event.pointerX(e), Event.pointerY(e));
+    }
   });
   step();
 });
