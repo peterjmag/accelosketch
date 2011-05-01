@@ -82,8 +82,8 @@ function drawShape(shape, context) {
 
 function createWorld() {
   var worldAABB = new b2AABB();
-  worldAABB.minVertex.Set(-1000, -1000);
-  worldAABB.maxVertex.Set(1000, 1000);
+  worldAABB.minVertex.Set( -200, -200 );
+  worldAABB.maxVertex.Set( screen.width + 200, screen.height + 200 );
   var gravity = new b2Vec2(0, 300);
   var doSleep = true;
   world = new b2World(worldAABB, gravity, doSleep);
