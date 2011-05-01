@@ -9,11 +9,11 @@ var canvasHeight;
 var canvasTop;
 var canvasLeft;
 
-var delta = [ 0, 0 ];
-var orientation = { x: 0, y: 1 };
+var delta = [0, 0];
+var orientation = {x: 0, y: 1};
 
 var walls = [];
-var wall_thickness = 200;
+var wall_thickness = 10;
 var wallsSet = false;
 
 var stage = [window.screenX, window.screenY, window.innerWidth, window.innerHeight];
@@ -172,10 +172,6 @@ function onWindowDeviceOrientation( event ) {
 }
 
 function step(cnt) {
-  if (getBrowserDimensions()) {
-    setWalls();
-  }
-
   var stepping = false;
   var timeStep = 1.0/60;
   var iteration = 1;
@@ -186,7 +182,6 @@ function step(cnt) {
   world.m_gravity.y = orientation.y * 350 + delta[1];
 
   world.Step(timeStep, iteration);
-  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
   drawWorld(world, ctx);
   setTimeout('step(' + (cnt || 0) + ')', 10);
 }
@@ -196,10 +191,6 @@ Event.observe(window, 'load', function() {
   world = createWorld();
   ctx = $('sketch').getContext('2d');
   var canvasElm = $('sketch');
-  canvasWidth = parseInt(canvasElm.width);
-  canvasHeight = parseInt(canvasElm.height);
-  canvasTop = parseInt(canvasElm.style.top);
-  canvasLeft = parseInt(canvasElm.style.left);
 
   setWalls();
 
