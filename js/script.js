@@ -9,6 +9,9 @@ var canvasHeight;
 var canvasTop;
 var canvasLeft;
 
+var delta = [ 0, 0 ];
+var orientation = { x: 0, y: 1 };
+
 function drawWorld(world, context) {
   for (var j = world.m_jointList; j; j = j.m_next) {
     drawJoint(j, context);
@@ -109,10 +112,23 @@ function step(cnt) {
   var stepping = false;
   var timeStep = 1.0/60;
   var iteration = 1;
+
+  delta[0] += (0 - delta[0]) * .5;
+  delta[1] += (0 - delta[1]) * .5;
+  world.m_gravity.x = orientation.x * 350 + delta[0];
+  world.m_gravity.y = orientation.y * 350 + delta[1];
+
   world.Step(timeStep, iteration);
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
   drawWorld(world, ctx);
   setTimeout('step(' + (cnt || 0) + ')', 10);
+}
+
+function onWindowDeviceOrientation( event ) {
+  if ( event.beta ) {
+    orientation.x = Math.sin( event.gamma * Math.PI / 180 );
+    orientation.y = Math.sin( ( Math.PI / 4 ) + event.beta * Math.PI / 180 );
+  }
 }
 
 // main entry point
@@ -124,6 +140,8 @@ Event.observe(window, 'load', function() {
   canvasHeight = parseInt(canvasElm.height);
   canvasTop = parseInt(canvasElm.style.top);
   canvasLeft = parseInt(canvasElm.style.left);
+
+  window.addEventListener('deviceorientation', onWindowDeviceOrientation, false);
 
   Event.observe('sketch', 'click', function(e) {
     if (Math.random() > 0.5) {
