@@ -12,10 +12,12 @@ var canvasLeft;
 var delta = [ 0, 0 ];
 var orientation = { x: 0, y: 1 };
 
-var stage = [ window.screenX, window.screenY, window.innerWidth, window.innerHeight ];
 var walls = [];
 var wall_thickness = 200;
 var wallsSet = false;
+
+var stage = [window.screenX, window.screenY, window.innerWidth, window.innerHeight];
+getBrowserDimensions();
 
 function drawWorld(world, context) {
   for (var j = world.m_jointList; j; j = j.m_next) {
@@ -113,20 +115,32 @@ function createBox(world, x, y, width, height, fixed) {
   return world.CreateBody(boxBd);
 }
 
-function step(cnt) {
-  var stepping = false;
-  var timeStep = 1.0/60;
-  var iteration = 1;
+function getBrowserDimensions() {
+  var changed = false;
 
-  delta[0] += (0 - delta[0]) * .5;
-  delta[1] += (0 - delta[1]) * .5;
-  world.m_gravity.x = orientation.x * 350 + delta[0];
-  world.m_gravity.y = orientation.y * 350 + delta[1];
+  if (stage[0] != window.screenX) {
+    delta[0] = (window.screenX - stage[0]) * 50;
+    stage[0] = window.screenX;
+    changed = true;
+  }
 
-  world.Step(timeStep, iteration);
-  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-  drawWorld(world, ctx);
-  setTimeout('step(' + (cnt || 0) + ')', 10);
+  if (stage[1] != window.screenY) {
+    delta[1] = (window.screenY - stage[1]) * 50;
+    stage[1] = window.screenY;
+    changed = true;
+  }
+
+  if (stage[2] != window.innerWidth) {
+    stage[2] = window.innerWidth;
+    changed = true;
+  }
+
+  if (stage[3] != window.innerHeight) {
+    stage[3] = window.innerHeight;
+    changed = true;
+  }
+
+  return changed;
 }
 
 function setWalls() {
@@ -155,6 +169,26 @@ function onWindowDeviceOrientation( event ) {
     orientation.x = Math.sin( event.gamma * Math.PI / 180 );
     orientation.y = Math.sin( ( Math.PI / 4 ) + event.beta * Math.PI / 180 );
   }
+}
+
+function step(cnt) {
+  if (getBrowserDimensions()) {
+    setWalls();
+  }
+
+  var stepping = false;
+  var timeStep = 1.0/60;
+  var iteration = 1;
+
+  delta[0] += (0 - delta[0]) * .5;
+  delta[1] += (0 - delta[1]) * .5;
+  world.m_gravity.x = orientation.x * 350 + delta[0];
+  world.m_gravity.y = orientation.y * 350 + delta[1];
+
+  world.Step(timeStep, iteration);
+  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  drawWorld(world, ctx);
+  setTimeout('step(' + (cnt || 0) + ')', 10);
 }
 
 // main entry point
