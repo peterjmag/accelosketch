@@ -31,11 +31,8 @@ function drawWorld(world, context) {
 }
 
 function drawShape(shape, context) {
-  if (shape.density == 1.0) {
-    context.fillStyle = "red";
-  } else {
-    context.fillStyle = "black";
-  }
+  // context.fillStyle = '#'+Math.floor(Math.random()*16777215).toString(16);
+  context.fillStyle = "black";
   context.beginPath();
   switch (shape.m_type) {
   case b2Shape.e_circleShape:
